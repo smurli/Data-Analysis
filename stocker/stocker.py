@@ -5,7 +5,9 @@ import pandas as pd
 import numpy as np
 import fbprophet
 import pytrends
+import datetime
 from pytrends.request import TrendReq
+from pandas_datareader import data as pddata
 
 # matplotlib pyplot for plotting
 import matplotlib.pyplot as plt
@@ -17,7 +19,7 @@ import matplotlib
 class Stocker():
     
     # Initialization requires a ticker symbol
-    def __init__(self, ticker, exchange='WIKI'):
+    def __init__(self, ticker, exchange='WIKI', source="quandl"):
         
         # Enforce capitalization
         ticker = ticker.upper()
@@ -29,14 +31,28 @@ class Stocker():
         # quandl.ApiConfig.api_key = 'YourKeyHere'
 
         # Retrieval the financial data
-        try:
-            stock = quandl.get('%s/%s' % (exchange, ticker))
-        
-        except Exception as e:
-            print('Error Retrieving Data.')
-            print(e)
+        if source.lower() == "quandl":
+            try:
+                stock = quandl.get('%s/%s' % (exchange, ticker))
+            
+            except Exception as e:
+                print('Error Retrieving Data from Quandal.')
+                print(e)
+                return
+        elif source.lower() == "yahoo":
+            try:
+                start = datetime.datetime(2001, 1, 1)
+                end = datetime.date.today()
+
+                stock = pddata.DataReader(ticker, 'yahoo', start, end)
+            except Exception as e:
+                print('Error Retrieving Data from Yahoo.')
+                print(e)
+                return
+        else:
+            print ("Error: Unknown Source")
             return
-        
+
         # Set the index to a column called Date
         stock = stock.reset_index(level=0)
         

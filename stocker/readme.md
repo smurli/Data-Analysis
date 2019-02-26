@@ -18,19 +18,20 @@ Python 3.6 and the following packages are required:
 	pystan 2.17.0.0
 	pandas 0.22.0
 	pytrends 4.3.0
+	pandas_datareader
 
 These can be installed with pip from the command line
 (some of these might require running the command prompt as 
 administrator). 
 
-`pip install -U quandl numpy pandas fbprophet matplotlib pytrends pystan`
+`pip install -U quandl numpy pandas fbprophet matplotlib pytrends pystan pandas-datareader`
 
 If pip does not work and you have the Anaconda 
 distribution, try installing with conda:
 
-`conda install quandl numpy pandas matplotlib pystan`
+`conda install quandl numpy pandas matplotlib pystan pandas-datareader`
 
-`conda update quandl numpy pandas matplotlib pystan`
+`conda update quandl numpy pandas matplotlib pystan pandas-datareader`
 
 pytrends and fbprophet can only be installed with pip. If you run into 
 any other errors installing packages, check out [Stack Overflow](https://stackoverflow.com/)
