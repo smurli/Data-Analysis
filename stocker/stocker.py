@@ -836,7 +836,7 @@ class Stocker():
             plt.show()
         
     # Predict the future price for a given range of days
-    def predict_future(self, days=30):
+    def predict_future(self, days=30, plot=True):
         
         # Use past self.training_years years for training
         train = self.stock[self.stock['Date'] > (max(self.stock['Date']) - pd.DateOffset(years=self.training_years)).date()]
@@ -869,42 +869,43 @@ class Stocker():
         
         future_increase = future[future['direction'] == 1]
         future_decrease = future[future['direction'] == 0]
-        
-        # Print out the dates
-        print('\nPredicted Increase: \n')
-        print(future_increase[['Date', 'estimate', 'change', 'upper', 'lower']])
-        
-        print('\nPredicted Decrease: \n')
-        print(future_decrease[['Date', 'estimate', 'change', 'upper', 'lower']])
-        
-        self.reset_plot()
-        
-        # Set up plot
-        plt.style.use('fivethirtyeight')
-        matplotlib.rcParams['axes.labelsize'] = 10
-        matplotlib.rcParams['xtick.labelsize'] = 8
-        matplotlib.rcParams['ytick.labelsize'] = 8
-        matplotlib.rcParams['axes.titlesize'] = 12
-        
-        # Plot the predictions and indicate if increase or decrease
-        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+        if plot == True:
+            # Print out the dates
+            print('\nPredicted Increase: \n')
+            print(future_increase[['Date', 'estimate', 'change', 'upper', 'lower']])
+            
+            print('\nPredicted Decrease: \n')
+            print(future_decrease[['Date', 'estimate', 'change', 'upper', 'lower']])
+            
+            self.reset_plot()
+            
+            # Set up plot
+            plt.style.use('fivethirtyeight')
+            matplotlib.rcParams['axes.labelsize'] = 10
+            matplotlib.rcParams['xtick.labelsize'] = 8
+            matplotlib.rcParams['ytick.labelsize'] = 8
+            matplotlib.rcParams['axes.titlesize'] = 12
+            
+            # Plot the predictions and indicate if increase or decrease
+            fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 
-        # Plot the estimates
-        ax.plot(future_increase['Date'], future_increase['estimate'], 'g^', ms = 12, label = 'Pred. Increase')
-        ax.plot(future_decrease['Date'], future_decrease['estimate'], 'rv', ms = 12, label = 'Pred. Decrease')
+            # Plot the estimates
+            ax.plot(future_increase['Date'], future_increase['estimate'], 'g^', ms = 12, label = 'Pred. Increase')
+            ax.plot(future_decrease['Date'], future_decrease['estimate'], 'rv', ms = 12, label = 'Pred. Decrease')
 
-        # Plot errorbars
-        ax.errorbar(future['Date'].dt.to_pydatetime(), future['estimate'], 
-                    yerr = future['upper'] - future['lower'], 
-                    capthick=1.4, color = 'k',linewidth = 2,
-                   ecolor='darkblue', capsize = 4, elinewidth = 1, label = 'Pred with Range')
+            # Plot errorbars
+            ax.errorbar(future['Date'].dt.to_pydatetime(), future['estimate'], 
+                        yerr = future['upper'] - future['lower'], 
+                        capthick=1.4, color = 'k',linewidth = 2,
+                       ecolor='darkblue', capsize = 4, elinewidth = 1, label = 'Pred with Range')
 
-        # Plot formatting
-        plt.legend(loc = 2, prop={'size': 10});
-        plt.xticks(rotation = '45')
-        plt.ylabel('Predicted Stock Price (US $)');
-        plt.xlabel('Date'); plt.title('Predictions for %s' % self.symbol);
-        plt.show()
+            # Plot formatting
+            plt.legend(loc = 2, prop={'size': 10});
+            plt.xticks(rotation = '45')
+            plt.ylabel('Predicted Stock Price (US $)');
+            plt.xlabel('Date'); plt.title('Predictions for %s' % self.symbol);
+            plt.show()
+        return future
         
     def changepoint_prior_validation(self, start_date=None, end_date=None,changepoint_priors = [0.001, 0.05, 0.1, 0.2]):
 
