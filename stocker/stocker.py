@@ -839,7 +839,8 @@ class Stocker():
     def predict_future(self, days=30, plot=True):
         
         # Use past self.training_years years for training
-        train = self.stock[self.stock['Date'] > (max(self.stock['Date']) - pd.DateOffset(years=self.training_years)).date()]
+        #train = self.stock[self.stock['Date'] > (max(self.stock['Date']) - pd.DateOffset(years=self.training_years)).date()]
+        train = self.stock[self.stock['Date'] > (self.max_date - pd.DateOffset(years=self.training_years)).date()]
         
         model = self.create_model()
         
@@ -850,7 +851,8 @@ class Stocker():
         future = model.predict(future)
         
         # Only concerned with future dates
-        future = future[future['ds'] >= max(self.stock['Date']).date()]
+        #future = future[future['ds'] >= max(self.stock['Date']).date()]
+        future = future[future['ds'] >= (self.max_date).date()][:days+1]
         
         # Remove the weekends
         future = self.remove_weekends(future)
